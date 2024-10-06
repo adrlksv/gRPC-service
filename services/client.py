@@ -6,7 +6,7 @@ import service_pb2_grpc
 
 
 def run():
-    with open('D:\\projects\\gRPC_serv\\config\\client_config.json', 'r') as f:
+    with open('../config/client_config.json', 'r') as f:
         config = json.load(f)
 
     channel = grpc.insecure_channel(f'{config["gRPCServerAddr"]}:{config["gRPCServerPort"]}')

@@ -21,7 +21,7 @@ class PacketDataService(service_pb2_grpc.PacketServiceServicer):
         
 
 def serve():
-    with open('D:\\projects\\gRPC_serv\\config\\server_config.json', 'r') as f:
+    with open('../config/server_config.json', 'r') as f:
         config = json.load(f)
 
     server = grpc.server(ThreadPoolExecutor())
