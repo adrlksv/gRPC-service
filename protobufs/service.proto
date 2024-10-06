@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+message Data {
+    double Decimal1 = 1;
+    double Decimal2 = 2;
+    double Decimal3 = 3;
+    double Decimal4 = 4;
+    int64 Timestamp = 5;
+}
+
+message DataRequest {
+    int64 PacketTimestamp = 1;
+    int64 PacketSeqNum = 2;
+    int32 NRecords = 3;
+    repeated Data PacketData = 4;
+}
+
+message ServiceResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+service PacketService {
+    rpc PacketData(DataRequest) returns (ServiceResponse);
+}
