@@ -5,8 +5,11 @@
 ```cd grpc-service```
 
 ## Собираем Docker-образ
-```docker-compose build```
-```docker-compose up```
+```docker-compose up --build```
 
-## Запускаем контейнеры сервиса и базы данных
-```docker-compose exec grpc-service python services/client.py```
+## Проверка работы
+### Подключение к контейнеру postgresql
+```docker exec -it grpc-service-postgres-1 psql -U postgres -d grpc_db```
+
+### После подключения введите команду для вывода всех записей в таблице
+```SELECT * FROM grpc_data;```

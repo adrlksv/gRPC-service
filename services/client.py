@@ -6,7 +6,22 @@ import service_pb2_grpc
 import time
 
 
+
+def wait_for_service():
+    with open('config/client_config.json', 'r') as f:
+        config = json.load(f)
+    while True:
+        try:
+            channel = grpc.insecure_channel(f'{config["gRPCServerAddr"]}:{config["gRPCServerPort"]}')
+            grpc.channel_ready_future(channel).result(timeout=5)
+            break
+        except grpc.FutureTimeoutError:
+            time.sleep(1)
+
+
 def run():
+    wait_for_service()
+    time.sleep(5)
     with open('config/client_config.json', 'r') as f:
         config = json.load(f)
 

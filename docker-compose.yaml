@@ -1,21 +1,38 @@
 version: '3.8'
+
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:17
     environment:
-      POSTGRES_DB: grpc_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: grpc_db
     ports:
       - "5432:5432"
-  
+
   grpc-service:
-    build: .
-    depends_on:
-      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      POSTGRES_DB: grpc_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: grpc_db
     ports:
       - "50051:50051"
+    depends_on:
+      - postgres
+  
+  grpc-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: grpc_db
+    depends_on:
+      - grpc-service
+    command: ["python", "/app/services/client.py"]
