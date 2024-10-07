@@ -1,9 +1,12 @@
 import grpc
 import json
 import time
+
 import service_pb2
 import service_pb2_grpc
+
 from concurrent.futures import ThreadPoolExecutor
+from db.db_utils import insert_data
 
 
 class PacketDataService(service_pb2_grpc.PacketServiceServicer):
@@ -14,7 +17,10 @@ class PacketDataService(service_pb2_grpc.PacketServiceServicer):
         print(f"NRecords: {request.NRecords}")
 
         for i, data in enumerate(request.PacketData):
-            print(f"Запись {i + 1}: Decimal1={data.Decimal1}, Decimal2={data.Decimal2}, Decimal3={data.Decimal3}, Decimal4={data.Decimal4}, Timestamp={data.Timestamp}")
+            print(f"""Запись {i + 1}: Decimal1={data.Decimal1}, Decimal2={data.Decimal2}, 
+                  Decimal3={data.Decimal3}, Decimal4={data.Decimal4}, Timestamp={data.Timestamp}""")
+        
+        insert_data(request)
             
         return service_pb2.ServiceResponse(success=True,
                                             message="Данные успешно приняты!")
