@@ -27,11 +27,20 @@ class PacketDataService(service_pb2_grpc.PacketServiceServicer):
         
 
 def serve():
-    with open('../config/server_config.json', 'r') as f:
+    with open('config/server_config.json', 'r') as f:
         config = json.load(f)
 
     with connect_to_db() as conn:
         with conn.cursor() as cursor:
+            cursor.execute("""CREATE TABLE IF NOT EXISTS grpc_data (
+                           PacketSeqNum BIGINT,
+                           RecordSeqNum BIGINT,
+                           Decimal1 DOUBLE PRECISION,
+                           Decimal2 DOUBLE PRECISION,
+                           Decimal3 DOUBLE PRECISION,
+                           Decimal4 DOUBLE PRECISION,
+                           RecordTimestamp BIGINT,
+                           PRIMARY KEY (PacketSeqNum, REcordSeqNum));""")
             cursor.execute("TRUNCATE TABLE grpc_data;")
             conn.commit()
 
