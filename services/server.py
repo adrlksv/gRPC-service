@@ -30,21 +30,26 @@ def serve():
     with open('config/server_config.json', 'r') as f:
         config = json.load(f)
 
-    with connect_to_db() as conn:
-        with conn.cursor() as cursor:
-            cursor.execute("""CREATE TABLE IF NOT EXISTS grpc_data (
-                           PacketSeqNum BIGINT,
-                           RecordSeqNum BIGINT,
-                           PacketTimestamp BIGINT,
-                           Decimal1 DOUBLE PRECISION,
-                           Decimal2 DOUBLE PRECISION,
-                           Decimal3 DOUBLE PRECISION,
-                           Decimal4 DOUBLE PRECISION,
-                           RecordTimestamp BIGINT,
-                           PRIMARY KEY (PacketSeqNum, RecordSeqNum));""")
-            cursor.execute("TRUNCATE TABLE grpc_data;")
-            conn.commit()
-
+    while True:
+        try:
+            with connect_to_db() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute("""CREATE TABLE IF NOT EXISTS grpc_data (
+                                PacketSeqNum BIGINT,
+                                RecordSeqNum BIGINT,
+                                PacketTimestamp BIGINT,
+                                Decimal1 DOUBLE PRECISION,
+                                Decimal2 DOUBLE PRECISION,
+                                Decimal3 DOUBLE PRECISION,
+                                Decimal4 DOUBLE PRECISION,
+                                RecordTimestamp BIGINT,
+                                PRIMARY KEY (PacketSeqNum, RecordSeqNum));""")
+                    cursor.execute("TRUNCATE TABLE grpc_data;")
+                    conn.commit()
+            break
+        except Exception as e:
+            print(f"Не удалось подключится к базе данных: {e}. Повторная попытка через 5 секунд.")
+            time.sleep(5)
     server = grpc.server(ThreadPoolExecutor())
     service_pb2_grpc.add_PacketServiceServicer_to_server(
         PacketDataService(), server)
