@@ -4,7 +4,7 @@ import time
 import service_pb2
 import service_pb2_grpc
 import time
-
+import psycopg2
 
 
 def wait_for_service():
@@ -15,7 +15,7 @@ def wait_for_service():
             channel = grpc.insecure_channel(f'{config["gRPCServerAddr"]}:{config["gRPCServerPort"]}')
             grpc.channel_ready_future(channel).result(timeout=5)
             break
-        except grpc.FutureTimeoutError:
+        except psycopg2.OperationalError:
             time.sleep(1)
 
 
