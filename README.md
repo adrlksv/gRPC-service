@@ -1,5 +1,5 @@
 ## Клонирование репозитория
-```git clone https://github.com/adrlksv/gRPC-service/tree/branch-1.git```
+```git clone https://github.com/adrlksv/gRPC-service.git```
 
 ## Переходим в директорию проекта
 ```cd grpc-service```
