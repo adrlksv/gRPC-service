@@ -9,11 +9,13 @@ services:
       POSTGRES_DB: grpc_db
     ports:
       - "5432:5432"
+    networks:
+      - grpc-network
 
   grpc-service:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: services/server/Dockerfile
     environment:
       DATABASE_HOST: postgres
       DATABASE_USER: postgres
@@ -23,12 +25,13 @@ services:
       - "50051:50051"
     depends_on:
       - postgres
-    restart: on-failure
-  
+    networks:
+      - grpc-network
+
   grpc-client:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: services/client/Dockerfile
     environment:
       DATABASE_HOST: postgres
       DATABASE_USER: postgres
@@ -36,4 +39,9 @@ services:
       DATABASE_NAME: grpc_db
     depends_on:
       - grpc-service
-    command: ["python", "/app/services/client.py"]
+    networks:
+      - grpc-network
+
+networks:
+  grpc-network:
+    driver: bridge
